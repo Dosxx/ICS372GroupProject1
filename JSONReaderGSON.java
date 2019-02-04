@@ -12,8 +12,57 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 public class JSONReaderGSON {
+	private String filePath;
+	
+	/**
+	 * Constructor
+	 */
+	public JSONReaderGSON() {		
+	}
+	
+	/**
+	 * A method to read a JSON file
+	 * @param filePath - physical location of the JSON file in the disk.
+	 * @return - returns a Site object that holds the collection of objects read from JSON file
+	 */
+	public Site readJsonFile(String filePath){
+		this.filePath=filePath;
+		Site site=null;
+		
+		Gson gson=new Gson();
+		BufferedReader br=null;
+		try {
+			br=new BufferedReader(new FileReader(this.filePath));
+			Site reading=gson.fromJson(br,Site.class);
+			if(reading!=null) {
+				site=reading;
+			}
+		}
+		catch (FileNotFoundException e) {
+		    e.printStackTrace();
+		} 
+		finally {
+		    if (br != null) {
+		    	try {
+		    		br.close();
+		    	} 
+		    	catch (IOException e) {
+		    		e.printStackTrace();
+		    	}
+		    }
+		
+		}
+		return site;
+	}
+	
+	/*
+	//The following line of code is to demonstrate how to implement inside the main method directly
+	//
+	//
 	public static void main(String[] Args) throws IOException {		
 		
+		///constructor
+		//variable will get the file path		
 		
 		Gson gson = new Gson();
 		BufferedReader br = null;
@@ -40,5 +89,5 @@ public class JSONReaderGSON {
 		    }
 		
 		}
-	}
+	}*/
 }
