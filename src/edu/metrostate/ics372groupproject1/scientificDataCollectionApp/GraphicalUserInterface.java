@@ -157,7 +157,7 @@ public class GraphicalUserInterface {
 		display.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		display.setBounds(40, 280, 506, 274);
 		frame.getContentPane().add(display);
-		//this is where the output to the dispay will be coded
+		//this is where the output to the display will be coded
 		display.setText("string representation of the site collections");
 		
 		//this function will export the site collection in a JSON format
