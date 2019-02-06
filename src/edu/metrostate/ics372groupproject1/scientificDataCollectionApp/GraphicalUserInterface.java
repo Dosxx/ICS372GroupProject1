@@ -42,9 +42,10 @@ public class GraphicalUserInterface {
 	}
 
 	/**
-	 * Create the application.
+	 * Create the application (the constructor).
 	 */
 	public GraphicalUserInterface() {
+		//call to instance method in the constructor
 		initialize();
 	}
 
