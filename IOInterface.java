@@ -1,17 +1,16 @@
 package edu.metrostate.ics372groupproject1.scientificDataCollectionApp;
 
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.LinkedList;
-
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.util.ArrayList;
 import java.util.Iterator;
-
 import com.google.gson.Gson;
 
 
@@ -19,12 +18,15 @@ public class IOInterface {
 	private String fileName;
 	private JFileChooser chooser;
 	private File outputFile;
-	private Gson gson;
-	private LinkedList<Site> listOfSite = new LinkedList<>();
+	private Component frame;
+	private Gson myGson;
+	private ArrayList<Site> listOfSite = new ArrayList<>();
 	
 	//File chooser constructor
-	public IOInterface() {
+	public IOInterface(Component frame) {
 		fileName = "";
+		this.frame = frame;
+		myGson = new Gson();
 	}
 	
 	//method to choose a file, it returns the chosen file
@@ -38,9 +40,10 @@ public class IOInterface {
         this.chooser.setFileFilter(filter);
         
         //open the file chooser dialog box
-        int status = chooser.showOpenDialog(null);
+
+        int status = chooser.showOpenDialog(frame);
         if(status == JFileChooser.APPROVE_OPTION) {
-        	
+
             //Construct the output file name
             fileName =  chooser.getSelectedFile().getName();
         }
@@ -48,42 +51,31 @@ public class IOInterface {
 	}
 	
 	//method to export JSON file
-	public void writeToFile() {
-		String outputFileName = JOptionPane.showInputDialog("Enter the name of the of the file...");
-		try {
-			//path and construct of the output file
-			outputFile = new File(System.getProperty("user.dir")+"/src/"+ outputFileName + ".json");
-			//Instantiate a PrintWriter object
-			PrintWriter writer = new PrintWriter(outputFile);
-			//Write JSON object to the specified file on the disk
-//			writer.write(gson.toJson(mySite)); //mySite will be the site with start collection on
-			writer.close();
-		}
-		catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage());
-		}
-		//Message to display after the operation are done
-		String message = String.format("The %s has been written successfully! \n", outputFile.getName());
-		JOptionPane.showMessageDialog(null, message);
+
+	public void writeToFile(String outputFileName) throws Exception{
+		//path and construct of the output file
+		outputFile = new File(System.getProperty("user.dir")+"/src/"+ outputFileName + ".json");
+		//Instantiate a PrintWriter object
+		PrintWriter writer = new PrintWriter(outputFile);
+		//Write JSON object to the specified file on the disk
+//			writer.write(myGson.toJson(mySite)); //mySite will be the site with start collection on
+		//successful export Message 
+		String message = String.format("%s has been written successfully! \n", outputFile.getName());
+		JOptionPane.showMessageDialog(frame, message);
+		writer.close();
+
 	}
 	
-
 	//ReadJSON take a file and reads the content into Objects
-	public void ReadJson(File input) {
-	//local variables to the read method
-	BufferedReader reader = null;
-	Site mySite = new Site();
-		try {
-			reader = new BufferedReader(new FileReader(input));
-			mySite = gson.fromJson(reader, Site.class);
-			//If mySite is not null, add it to the collection on sites
-			if(mySite!=null) {
-				listOfSite.add(mySite);
-			}
-			reader.close();
-		}catch(Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage());
+	public void ReadJson(File input) throws Exception{
+		//local variables to the read method
+		BufferedReader reader = new BufferedReader(new FileReader(input));
+		Site mySite = myGson.fromJson(reader, Site.class);
+		//If mySite is not null, add it to the collection on sites
+		if(mySite != null) {
+			listOfSite.add(mySite);
 		}
+		reader.close();
 	}
 	
 	//method to get the input file name
@@ -92,19 +84,29 @@ public class IOInterface {
 	}
 	
 	//get specified site from collection 
-//	public Site getSite(String siteID) {
-//		Iterator<Site> iterate = listOfSite.iterator();
-//		while(iterate.hasNext()) {
-//			Site currentSite = iterate.next();
-//			if(currentSite.getSiteID().equal(siteID)) {
-//				return currentSite;
-//			}
-//		}
-//	}
+	public Site getSite(String siteID) {
+		Site mySite = new Site();
+		Iterator<Site> iterate = listOfSite.iterator();
+		while(iterate.hasNext()) {
+			ArrayList<Item> list =  iterate.next().getItems();
+			for(Item i :list) {
+				if(i.getSiteID().equals(siteID)) {
+					//Only the item with matching Site ID are add 
+					mySite.addItem(i);
+				}
+			}
+		}
+//		System.out.println(mySite.getItems());
+		return mySite;
+	}
 	
 	//get all the site collections
-	public void getListOfSite() {
-		//to be implemented
+	public String getListOfSite() {
+		String sites = "";
+		for(Site s : listOfSite) {
+			sites += s.toString()+ "\n"; 
+		}
+		return sites;
 	}
 	
 	// The method set up the path and name of the output file to write to
@@ -112,4 +114,3 @@ public class IOInterface {
 		return outputFile.getAbsolutePath();
 	}
 }
-
