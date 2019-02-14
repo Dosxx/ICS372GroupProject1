@@ -1,4 +1,4 @@
-package edu.metrostate.ics372groupproject1.scientificDataCollectionApp;
+//package edu.metrostate.ics372groupproject1.scientificDataCollectionApp;
 
 import java.awt.Component;
 import java.io.BufferedReader;
@@ -84,20 +84,19 @@ public class IOInterface {
 	}
 	
 	//get specified site from collection 
-	public Site getSite(String siteID) {
-		Site mySite = new Site();
+	public void getSite(String siteID, Site pickedSite) {
+//		Site mySite = new Site();
 		Iterator<Site> iterate = listOfSite.iterator();
 		while(iterate.hasNext()) {
 			ArrayList<Item> list =  iterate.next().getItems();
 			for(Item i :list) {
-				if(i.getSiteID().equals(siteID)) {
+				if(i.getSiteID().equals(siteID) && pickedSite.isRecording()) {
 					//Only the item with matching Site ID are add 
-					mySite.addItem(i);
+					pickedSite.addItem(i);
 				}
 			}
 		}
-//		System.out.println(mySite.getItems());
-		return mySite;
+//		System.out.println(pickedSite.getItems());
 	}
 	
 	//get all the site collections
