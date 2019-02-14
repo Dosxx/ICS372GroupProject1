@@ -1,4 +1,4 @@
-//package edu.metrostate.ics372groupproject1.scientificDataCollectionApp;
+package edu.metrostate.ics372groupproject1.scientificDataCollectionApp;
 
 import java.awt.Component;
 import java.io.BufferedReader;
