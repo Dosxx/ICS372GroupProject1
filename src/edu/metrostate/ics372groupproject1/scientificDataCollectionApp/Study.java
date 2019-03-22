@@ -1,8 +1,9 @@
-
 package edu.metrostate.ics372groupproject1.scientificDataCollectionApp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -19,7 +20,7 @@ public class Study {
 	
 	@SerializedName("sites")
 	@Expose
-	private ArrayList<Site> listOfSite = new ArrayList<>();
+	private Map<String, Site> listOfSites = new HashMap<String, Site>();
 	
 	//constructors
 	public Study() {
@@ -50,19 +51,19 @@ public class Study {
 	
 	//adding sites to a study, takes a site as parameter
 	public void addSite(Site site) {
-		listOfSite.add(site);
+		listOfSites.put(site.getSiteID(), site);
 	}
 	
 	//set all site to start collecting
 	public void startAllSiteCollection() {
-		for(Site s : listOfSite) {
+		for(Site s : listOfSites.values()) {
 			s.setRecording(true);
 		}
 	}
 	
 	//end all sites collection
 	public void endAllSiteCollection() {
-		for(Site s : listOfSite) {
+		for(Site s : listOfSites.values()) {
 			s.setRecording(false);
 		}
 	}
@@ -78,14 +79,14 @@ public class Study {
 		Iterator<Item> itemIterator = reading.getReadings().iterator();
 		//Iterate over readings to create site and associate the items to it
 		while (itemIterator.hasNext()) {
-				Item currentItem = itemIterator.next();
-				if (currentItem.getSiteID() != null) {
-					Site currentSite = new Site(currentItem.getSiteID());
-					if (!this.listOfSite.contains(currentSite)) {
-						//the site is not yet in study so add empty site to study
-						listOfSite.add(currentSite);
-					} 
-				}
+			Item currentItem = itemIterator.next();
+			if (currentItem.getSiteID() != null) {
+				Site currentSite = new Site(currentItem.getSiteID());
+				if (!this.listOfSites.containsKey(currentSite.getSiteID())) {
+					//the site is not yet in study so add empty site to study
+					listOfSites.put(currentSite.getSiteID(), currentSite);
+				} 
+			}
 		}
 	}
 	
@@ -97,29 +98,33 @@ public class Study {
 	 * a Site is return to the caller
 	 */
 	public Site getSiteByID(String siteId) {
-		Site mySite = null;
-		for(Site site : this.listOfSite) {
-			if(site.getSiteID() != null && site.getSiteID().equals(siteId)) {
-				mySite = site;
-				break;
-			}
-		}
-		return mySite;
+		return listOfSites.get(siteId);
 	}
 	
 	//get the list of sites in study
 	public ArrayList<Site> getAllSite() {
-		return this.listOfSite;
+		ArrayList<Site> allSites = new ArrayList<Site>(listOfSites.values());
+		return allSites;
+	}
+	
+	@Override
+	//equality of study implementation
+	public boolean equals(Object o) {
+		Study nstudy = null;
+		if(o instanceof Study) {
+			nstudy = (Study)o;
+		}
+		return this.studyID.equals(nstudy.getStudyID()) && this.studyName.equals(nstudy.getStudyName());
 	}
 	
 	@Override
 	//Override the inherited toString method from Object class
 	public String toString() {
 		String text = "";
-		for(Site s : listOfSite) {
+		for(Site s : listOfSites.values()) {
 			text += s.toString() + "\n";
 		}
-		return "\nStudy_ID: " + this.studyID +"\nStudy_Name: "+ this.studyName + text;
+		return "\nStudy_ID: " + this.studyID +"\nStudy_Name: "+ this.studyName +"\n" + text;
 	}
 	
 }	

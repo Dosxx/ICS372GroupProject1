@@ -1,8 +1,8 @@
 package edu.metrostate.ics372groupproject1.scientificDataCollectionApp;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -13,11 +13,10 @@ public class Site {
 //	@Expose
 	private String siteID;
 	private boolean recording;
-	private Set<String> readingIDs = new HashSet<String>();
 	//Creating collection class to store objects read from JSON file.
 	@SerializedName("site_readings")
 	@Expose
-	private ArrayList<Item> items = new ArrayList<Item>();
+	private Map<String, Item> items = new HashMap<String, Item>();
 
 	public Site() {
 		recording = false;
@@ -27,7 +26,6 @@ public class Site {
 		siteID = id;
 	}
 	
-
 	public String getSiteID() {
 		return siteID;
 	}
@@ -37,7 +35,8 @@ public class Site {
 	}
 
 	public ArrayList<Item> getItems() {
-		return items;
+		ArrayList<Item> allItems = new ArrayList<Item>(items.values());
+		return allItems;
 	}
 
 	public void setRecording(boolean bool) {
@@ -45,7 +44,9 @@ public class Site {
 	}
 	
 	public void setItems(ArrayList<Item> items) {
-		this.items = items;
+		for(Item i : items) {
+			this.items.put(i.getReadingID(), i);
+		}
 	}
 	
 	/**
@@ -56,11 +57,10 @@ public class Site {
 	 * return true if the new item is added to site
 	 */
 	public boolean addItem(Item i) {
-		if(!readingIDs.contains(i.getReadingID()) && recording) {
-			this.items.add(i);
-			this.readingIDs.add(i.getReadingID());
+		if(!items.containsKey(i.getReadingID()) && recording) {
+			this.items.put(i.getReadingID(), i);
 		}
-		return this.items.contains(i);
+		return this.items.containsKey(i.getReadingID());
 	}
 	
 	/**
@@ -75,8 +75,8 @@ public class Site {
 		if(this.recording) {
 			for(Item item : readings.getReadings()) {
 				if(item.getSiteID() != null && item.getSiteID().equals(this.siteID)) {
-					this.items.add(item);
-					result = this.items.contains(item);
+					this.items.put(item.getReadingID(), item);
+					result = this.items.containsKey(item.getReadingID());
 				}
 			}
 		}
@@ -100,20 +100,19 @@ public class Site {
 	 * @return
 	 * return true if equal and false other wise
 	 */
-	public boolean equals(Object o) {
-		if(o instanceof Site) {
-			Site site = (Site)o;
-			//true if both siteID field are equal
-			return this.siteID.equals(site.getSiteID());
-		}else {
-			return false;
+	public boolean equals(Object object) {
+		Site nsite = null;
+		if(object instanceof Site) {
+			nsite = (Site)object;
 		}
+		//true if both siteID field are equal
+		return this.siteID.equals(nsite.getSiteID());
 	}
 	
 	//to string method 
 	public String toString() {
 		String text = "";
-		for(Item i : items) {
+		for(Item i : items.values()) {
 			text += i.toString() + "\n";
 		}
 		return text;
