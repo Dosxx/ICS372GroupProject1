@@ -5,34 +5,41 @@ import edu.metrostate.ics372groupproject1.scientificDataCollectionApp.Site;
 import junit.framework.TestCase;
 
 public class SiteTest extends TestCase{
-
+	Item item1 = new Item("12345", "Temp", "Fahrenheight", "12547g", 25d, 0);
+	Item item2 = new Item("46678", "Humidity", "", "56789", 30d, 0);
+	Site site1 = new Site("99999");
+	Site site2 = new Site();	
+	
+	//Test to ensure siteId will return the correct value
 	public void testGetSiteID() {
-//		fail("Not yet implemented");
-	}
+		assertEquals("99999",site1.getSiteID());
+		assertNull(null,site2.getSiteID());	}
 
+	//Test to ensure SiteID will be set to the value assigned
 	public void testSetSiteID() {
-//		fail("Not yet implemented");
+		site2.setSiteID("testingSetSiteID");
+		assertEquals("testingSetSiteID",site2.getSiteID());	
 	}
+	
 
-	public void testGetItems() {
-//		fail("Not yet implemented");
-	}
-
-	public void testSetRecording() {
-//		fail("Not yet implemented");
-	}
-
-	public void testSetItems() {
-//		fail("Not yet implemented");
-	}
-
+	//Test to ensure that the item is successfully added
+	//when the recording is true
 	public void testAddItem() {
-//		fail("Not yet implemented");
+		site1.setRecording(true);		
+		site1.addItem(item1);
+		for(Item i:site1.getItems()) {			
+			assertEquals(i,item1);
+		}  
 	}
 
+	//Testing isRecording method
 	public void testIsRecording() {
-//		fail("Not yet implemented");
-	}
+		site1.setRecording(true);
+		assertTrue(site1.isRecording());
+		
+		site1.setRecording(false);
+		assertFalse(site1.isRecording());
+	}	
 	
 	public void testSitecontainsAnItem() {
 		Item item1 = new Item("12345", "Humidity", "percent", "12547g", 25, 0);
