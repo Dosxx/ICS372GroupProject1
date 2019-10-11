@@ -1,6 +1,6 @@
 
 ICS372 Group Assignment1<br />
-Group Member:<br />
+Group Member: Sashi, Dos, Tyler, <br />
 Metropolitan State University<br />
 Date: February 12, 2019<br />
 This program is designed and built for a scientific study.<br />
